@@ -1,0 +1,259 @@
+#include<iostream>
+#include<fstream>
+#include<string.h>
+ using namespace std;
+ struct shrtnpre
+ {
+ 	int name;
+ 	int bt;
+ 	int at;
+ 	int pri;
+ }mode[n],mode2[n];
+ void sortburst(struct shrtnpre mode[n],int cunt );
+ void sort2(struct shrtnpre mode[n],int cunt );
+ void sortfinal(struct shrtnpre mode2[n],int cunt );
+ void shortjobnonpre (struct shrtnpre mode[n],int bu[n],int arri[n],int cunt);
+ void firstcome (struct shrtnpre mode[n],int cunt);
+ void sortarrival(struct shrtnpre mode[n],int cunt );
+ int main ()
+ {	
+ 		//int b,a,p;
+ 	
+ 	ifstream file2("pro.txt");
+ 	int burst[n];
+	int ar[n];
+	int pri[n];
+	int count =0;
+ 		while(file2 >> b >>a >> p)
+	{		
+		int s,l,o;
+		s=b;
+		l=a;
+		o=p;
+	
+		burst[count]=s ;
+		 ar[count]=l ;
+		 pri[count]=o;
+		 count ++;
+	
+	} 
+			for(int i=0;i<count;i++)
+	{
+		mode[i].name=i+1;
+		mode[i].bt=burst[i];
+		mode[i].at=ar[i];
+		mode[i].pri=pr[i];
+	}
+ 		
+	int c;	
+	while(true)
+	{
+		cout<<"1)Scheduling Method\n ";
+		cout<<"2)Preemptive Mode \n";
+		cout<<"3)Non-preemptive Mode \n";
+		cout<<"4)Show Result \n";
+		cout<<"5)End Program\n ";
+
+	cin>>c;
+	switch (c)
+	{
+			case 1:	  	
+	switch (c)
+	{
+	case 1:
+				
+		int schnum;
+		cout<<"1)Scheduling Method:  First Come First Served\n ";
+		cout<<"2)Scheduling Method:  Shortest Job First Non-Preemptive\n";
+		cout<<"3)Scheduling Method:  Shortest Job First Preemptive\n";
+		cout<<"4)Scheduling Method:  Priority Scheduling  Non-Preemptive\n";
+		cout<<"5)Scheduling Method:  Priority Scheduling  Preemptive\n ";
+		cout<<"6)Scheduling Method:  Round Robin Scheduling  time_quantum=2\n ";
+		
+		cin>>schnum;
+		switch (schnum)
+		{
+			
+			case 1:
+				cout<<"1)Scheduling Method:  First Come First Served\n ";
+				firstcome (mode,count);
+				break;
+			case 2:
+				cout<<"2)Scheduling Method:  Shortest Job First Non-Preemptive\n";
+				 shortjobnonpre (mode,burst, ar ,count);
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+				default :
+					break;
+							
+		}
+			break;
+		case 2:
+		
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+			default :
+				break;
+						
+	}
+}
+}
+	file2.close();
+	return 0;	
+}
+ void firstcome (struct shrtnpre mode[n],int cunt)
+ {	sortarrival(mode,cunt);
+	int v=0;
+	int ah[n],summ[n];
+	for(int i=0;i<cunt;i++)
+	{
+		v= v+ mode[i].bt;
+		ah[i]=v;	
+	}
+	for(int j=0;j<cunt;j++)
+	{
+		if(j==0)
+		{
+			summ[j]=mode[j].at;		
+		}
+		summ[j+1]=ah[j] - mode[j+1].at;	
+	}
+		for(int i=0;i<cunt;i++)
+	{
+	
+		mode[i].bt=summ[i];
+	}
+ sortfinal( mode,cunt );
+ int sum,l=0;
+ cout<<"Process waiting times :\n";
+				for(int i=0;i<cunt;i++)
+	{	
+		cout<<" P"<<i+1<<" :"<<mode[i].bt <<" ms\n";
+		sum=sum+mode[i].bt;
+	
+		l++;
+	}
+	cout<<" Average waiting time :"<<sum/l<<" ms\n";
+ }
+ void shortjobnonpre (struct shrtnpre mode[n],int bu[n],int arri[n],int cunt)
+ {
+ 			for(int i=0;i<cunt;i++)
+	{
+		mode[i].name=i+1;
+		mode[i].bt=bu[i];
+		mode[i].at=arri[i];		
+	}
+		sortburst(  mode, cunt );
+			sort2(  mode, cunt );	
+	for(int i=0;i<cunt;i++)
+	{
+		if(mode[i].at==0)
+		{
+			mode2[0].bt=mode[i].bt;
+			mode2[0].at=mode[i].at;
+			mode2[0].name=mode[i].name;
+			for(int v=i;v<cunt;v++)
+			{
+			mode[v].bt=mode[v+1].bt;
+			mode[v].at=mode[v+1].at;
+			mode[v].name=mode[v+1].name;
+		}
+		}
+	}
+	for(int i=0;i<cunt;i++)
+	{	mode2[i+1].bt=mode2[i].bt+mode[i].bt;
+			mode2[i+1].at=mode[i].at;
+			mode2[i+1].name=mode[i].name;			
+	}
+	int fin[n];
+		for(int i=0;i<cunt;i++)
+	{
+		if(i==0)
+		{
+			fin[i]=mode2[i].at;
+		}
+	
+		fin[i+1]=mode2[i].bt-mode2[i+1].at;
+}
+	for(int i=0;i<cunt;i++)
+	{
+		mode2[i].bt=fin[i];
+	}
+	 sortfinal( mode2, cunt );
+	int div=0;
+	double num;
+		cout<<"\n Process Waiting Times :\n ";
+		 	for(int j=0;j<cunt;j++)
+	{
+		num=num+mode2[j].bt;
+		div++;
+		cout<<"P"<< j+1 <<" :"<<mode2[j].bt<<" ms"<<"\n";		
+	}
+	cout<<" Average Waiting Time :"<< num/div <<" ms\n";	
+ }
+void sortburst(struct shrtnpre mode[n],int cunt )
+{	int temp,id,arrive;
+	for(int i=0;i<cunt;i++)
+	{
+		for(int j=0;j<cunt-1-i;j++)
+		{
+			if(mode[j].bt>mode[j+1].bt)
+			{	
+				temp = mode[j].bt ; id=mode[j].name; arrive=mode[j].at;
+				mode[j].bt=mode[j+1].bt ; mode[j].name=mode[j+1].name; mode[j].at=mode[j+1].at;
+				mode[j+1].bt=temp ; mode[j+1].name=id; mode[j+1].at=arrive;
+			}
+		}		
+	}
+}
+void sortfinal(struct shrtnpre mode2[n],int cunt )
+{	int temp,id,arrive;
+	for(int i=0;i<cunt;i++)
+	{
+		for(int j=0;j<cunt-1-i;j++)
+		{
+			if(mode2[j].name>mode2[j+1].name)
+			{
+				temp = mode2[j].bt ; id=mode2[j].name; arrive=mode2[j].at;
+				mode2[j].bt=mode2[j+1].bt ; mode2[j].name=mode2[j+1].name; mode2[j].at=mode2[j+1].at;
+				mode2[j+1].bt=temp ; mode2[j+1].name=id; mode2[j+1].at=arrive;
+			}
+		}		
+	}
+}
+void sort2(struct shrtnpre mode[n],int cunt )
+{	
+	int temp2,id2,arrive2;
+		for(int j=0;j<cunt-1;j++)
+		{
+			if(mode[j].bt==mode[j+1].bt && mode[j].at>mode[j+1].at)
+			{
+				
+				temp2 = mode[j].bt; id2=mode[j].name; arrive2=mode[j].at;
+				mode[j].bt=mode[j+1].bt ; mode[j].name=mode[j+1].name;  mode[j].at=mode[j+1].at;
+				mode[j+1].bt=temp2 ;  mode[j+1].name=id2;  mode[j+1].at=arrive2;
+			}
+	}	
+}
+void sortarrival(struct shrtnpre mode[n],int cunt )
+{
+	int temp,id,arrive;
+	for(int i=0;i<cunt;i++)
+	{		for(int j=0;j<cunt-1-i;j++)
+		{
+			if(mode[j].at>mode[j+1].at)
+			{	
+				temp = mode[j].at ; id=mode[j].name; arrive=mode[j].bt;
+				mode[j].at=mode[j+1].at ; mode[j].name=mode[j+1].name; mode[j].bt=mode[j+1].bt;
+				mode[j+1].at=temp ; mode[j+1].name=id; mode[j+1].bt=arrive;
+			}
+		}		
+	}
+	
+}
