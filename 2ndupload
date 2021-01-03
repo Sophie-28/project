@@ -1,0 +1,242 @@
+#include<iostream>
+#include<stdlib.h>
+#include<sstream>
+#include<string.h>
+#include<fstream>
+#include<cmath>
+
+using namespace std;
+struct node 
+{
+	int id;
+	int busrt;
+	int arrival;
+	int pri;
+	struct node *next;
+}header,header2;
+struct node * Creatnode(int bu, int arr, int pr,int i1);
+struct node *InsertBack(struct node * header,int bu, int arr, int pr,int i1);
+void displaylist(struct node *header);
+int toint(string numstr);
+string tochar(int num);
+void readfile(struct node *header);
+struct node *sort(struct node * header);
+void firstcome(struct node *header);
+struct node *sort_id(struct node * header);
+void writetofile(struct node *header);
+string tocharfloat(float num);
+int main()
+{
+	struct node *header = NULL;
+	readfile(header);
+	return 0;
+}
+void readfile(struct node *header)
+{
+
+		ifstream file2("pro.txt");
+		if(!file2.is_open())
+		{
+			cout<<"Failed to open\n";
+		}
+		else{
+			cout<<"File opened\n";
+		}
+		
+			string b,a,p;
+			int b2,a2,p2,i=0;
+			string line;
+			while(file2.good())
+			{
+				while(getline(file2, line))
+				{
+					stringstream ss(line);
+					getline(ss,b,':');
+					b2=toint(b);
+					getline(ss,a,':');
+				    a2=toint(a);
+					getline(ss,p,':');
+					p2=toint(p);
+					i++;
+				header =InsertBack(header,b2,a2,p2,i);	
+	            
+				}
+		
+		}
+	//	displaylist(header);
+	//	cout<<"\n\n";
+	    header=sort(header);
+	    	firstcome(header);
+	
+	file2.close();
+}
+int toint(string numstr)
+	{
+		int num=0,size=numstr.size();
+		int j=size;
+		for(int i=0;i<size;i++)
+		{
+			num+=(numstr[--j]-'0')*pow(10,i);
+		}
+		return num;
+	}
+string tochar(int num)
+	{
+	stringstream ss;
+	ss << num;
+	string str;
+	ss>>str;
+	return str;
+	}
+string tocharfloat(float num)
+{
+stringstream ss;
+ss << num;
+string str;
+ss>>str;
+return str;
+	}
+struct node * Creatnode(int bu, int arr, int pr,int i1)
+{
+	struct node *temp;
+	temp = (struct node*)malloc(sizeof(node));
+	temp->id=i1;
+	temp->busrt=bu;
+	temp->arrival=arr;
+	temp->pri=pr;
+	temp->next=NULL;
+	return temp;
+}
+struct node *InsertBack(struct node *header,int bu, int arr, int pr,int i1)
+{
+	struct node *temp= Creatnode(bu,arr,pr,i1);
+	struct node *headertemp;
+	if(header==NULL)
+	{
+		header=temp;
+		return header;
+	}
+	headertemp= header;
+	while(headertemp->next!=NULL)
+	{
+		headertemp=headertemp->next;
+	}
+	headertemp->next=temp;
+	return header;
+}
+void firstcome(struct node *header)
+{
+	int sum=0;
+	struct node *temp=header;
+	if(header == NULL)
+	{
+		cout<<"List is Empty";
+	}
+		while(temp != NULL)
+		{
+			int ps=0;
+			ps=temp->busrt;
+			if(temp==header)
+			{
+				temp->busrt=0;
+				sum+=ps;
+		      temp=temp->next;
+			}	
+			else
+			{	
+				temp->busrt=sum;
+				sum+=ps;
+				temp->busrt=temp->busrt-temp->arrival;
+				temp=temp->next;
+			}
+				
+		}
+		header=sort_id(header);
+		
+		writetofile(header);
+}
+void writetofile(struct node *header)
+{
+	struct node *temp=header;
+		string output;
+		int max=0,i=0;
+		float avg;
+		while(temp->next != NULL)
+		{	output= output +"P"+ tochar(temp->id)+":"+tochar(temp->busrt)+ "ms\n";
+			max+=temp->busrt;
+		   temp=temp->next;  
+		   i++; 
+     	}
+     	
+     	avg=max/i;
+		output= output +"Average Waiting Time: "+tocharfloat(avg)+ "ms\n";
+		
+		fstream fileread("pro2.txt",ios::out | ios::app);
+	fileread<<output;
+			displaylist(header);
+	
+}
+void displaylist(struct node *header)
+{
+	struct node *temp=header;
+	if(header == NULL)
+	{
+		cout<<"List is Empty";
+	}
+		while(temp->next!= NULL)
+		{
+			cout<<"P"<<temp->id<<": "<<temp->busrt<<" ";
+		//	cout<<temp->id<<":"<<temp->busrt<<":"<<temp->arrival<<"\n";
+			temp=temp->next;
+			}
+	}
+struct node *sort(struct node * header)
+{
+	struct node * curr;
+	struct node * mov;
+	int tempa,tempb,tempp,tempid;
+	curr=header;
+	{
+		while(curr->next!=NULL)
+		{
+			mov=curr->next;
+			while(mov!=NULL)
+			{
+				if(curr->arrival > mov->arrival || (curr->arrival == mov->arrival && curr->id > mov->id))
+				{
+					tempa=curr->arrival;tempb=curr->busrt;tempp=curr->pri;tempid=curr->id;
+					curr->arrival=mov->arrival;curr->busrt=mov->busrt;curr->pri=mov->pri;curr->id=mov->id;
+					mov->arrival=tempa;mov->busrt=tempb;mov->pri=tempp;mov->id=tempid;
+				}
+				mov=mov->next;
+			}
+			curr=curr->next;
+		}
+	}
+	return header;
+}
+struct node *sort_id(struct node * header)
+{
+	struct node * curr;
+	struct node * mov;
+	int tempa,tempb,tempp,tempid;
+	curr=header;
+	{
+		while(curr->next!=NULL)
+		{
+			mov=curr->next;
+			while(mov!=NULL)
+			{
+				if(curr->id > mov->id)
+				{
+					tempid=curr->id;tempa=curr->arrival;tempb=curr->busrt;tempp=curr->pri;
+				  curr->id=mov->id;	curr->arrival=mov->arrival;curr->busrt=mov->busrt;curr->pri=mov->pri;
+					curr->id=mov->id;mov->arrival=tempa;mov->busrt=tempb;mov->pri=tempp;curr->id=mov->id;
+				}
+				mov=mov->next;
+			}
+			curr=curr->next;
+		}
+	}
+	return header;
+}
