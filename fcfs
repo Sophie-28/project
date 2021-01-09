@@ -1,24 +1,45 @@
-#include<iostream>
+#include
 #include<stdlib.h>
-#include<sstream>
+#include
 #include<string.h>
-#include<fstream>
-#include<cmath>
-using namespace std;
-int toint(string numstr);
-int main(void)
-{
-ifstream file2("pro.txt");
-if(!file2.is_open())
-{
-cout<<"Failed to open";
-}
-else{
-cout<<"File opened";
-}
+#include
+#include
 
+using namespace std;
+struct node
+{
+int id;
+int busrt;
+int arrival;
+int pri;
+struct node *next;
+}header,header2;
+struct node * Creatnode(int bu, int arr, int pr,int i1);
+struct node *InsertBack(struct node * header,int bu, int arr, int pr,int i1);
+void displaylist(struct node *header);
+void readfile(struct node *header);
+int main()
+{
+struct node *header = NULL;
+readfile(header);
+displaylist(header);
+cout<<"\n\n";
+return 0;
+}
+void readfile(struct node *header)
+{
+
+	ifstream file2("pro.txt");
+	if(!file2.is_open())
+	{
+		cout<<"Failed to open\n";
+	}
+	else{
+		cout<<"File opened\n";
+	}
+	
 		string b,a,p;
-		int b2,a2,p2;
+		int b2,a2,p2,i=0;
 		string line;
 		while(file2.good())
 		{
@@ -31,23 +52,59 @@ cout<<"File opened";
 			    a2=toint(a);
 				getline(ss,p,':');
 				p2=toint(p);
-				
-	cout<<b2;
-	cout<<a2;
-	cout<<p2<<"\n";
+				i++;
+			header =InsertBack(header,b2,a2,p2,i);	
+            
 			}
 	
 	}
-	
+//	displaylist(header);
+//	cout<<"\n\n";
+    header=sort(header);
+    	firstcome(header);
 
-/*	while(file2.good())
-	{
+file2.close();
 
-	string line;
-	getline(file2, line );
-	cout<<line<<"\n";
-
-}*/
-	file2.close();
-return 0;	
 }
+struct node * Creatnode(int bu, int arr, int pr,int i1)
+{
+struct node temp;
+temp = (struct node)malloc(sizeof(node));
+temp->id=i1;
+temp->busrt=bu;
+temp->arrival=arr;
+temp->pri=pr;
+temp->next=NULL;
+return temp;
+}
+struct node *InsertBack(struct node *header,int bu, int arr, int pr,int i1)
+{
+struct node *temp= Creatnode(bu,arr,pr,i1);
+struct node *headertemp;
+if(header==NULL)
+{
+header=temp;
+return header;
+}
+headertemp= header;
+while(headertemp->next!=NULL)
+{
+headertemp=headertemp->next;
+}
+headertemp->next=temp;
+return header;
+}
+void displaylist(struct node *header)
+{
+struct node *temp=header;
+if(header == NULL)
+{
+cout<<"List is Empty";
+}
+while(temp->next!= NULL)
+{
+cout<id<<":"<busrt<<":"<arrival<<"\n";
+temp=temp->next;
+}
+}
+
