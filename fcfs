@@ -1,9 +1,9 @@
-#include
+#include<iostream>
 #include<stdlib.h>
-#include
+#include<sstream>
 #include<string.h>
-#include
-#include
+#include<fstream>
+#include<cmath>
 
 using namespace std;
 struct node
@@ -19,11 +19,11 @@ struct node *InsertBack(struct node * header,int bu, int arr, int pr,int i1);
 void displaylist(struct node *header);
 int toint(string numstr);
 void readfile(struct node *header);
+struct node *sort(struct node * header);
 int main()
 {
 struct node *header = NULL;
 readfile(header);
-displaylist(header);
 cout<<"\n\n";
 return 0;
 }
@@ -62,7 +62,7 @@ void readfile(struct node *header)
 //	displaylist(header);
 //	cout<<"\n\n";
     header=sort(header);
-    	firstcome(header);
+   	displaylist(header);
 
 file2.close();
 
@@ -91,7 +91,7 @@ return temp;
 struct node *InsertBack(struct node *header,int bu, int arr, int pr,int i1)
 {
 struct node *temp= Creatnode(bu,arr,pr,i1);
-struct node *headertemp;
+struct node headertemp;
 if(header==NULL)
 {
 header=temp;
@@ -105,17 +105,41 @@ headertemp=headertemp->next;
 headertemp->next=temp;
 return header;
 }
-void displaylist(struct node *header)
+void displaylist(struct node header)
 {
-struct node *temp=header;
+struct node temp=header;
 if(header == NULL)
 {
 cout<<"List is Empty";
 }
-while(temp->next!= NULL)
+while(temp!= NULL)
 {
 cout<id<<":"<busrt<<":"<arrival<<"\n";
 temp=temp->next;
 }
 }
-
+struct node *sort(struct node * header)
+{
+struct node * curr;
+struct node * mov;
+int tempa,tempb,tempp,tempid;
+curr=header;
+{
+while(curr->next!=NULL)
+{
+mov=curr->next;
+while(mov!=NULL)
+{
+if(curr->arrival > mov->arrival || (curr->arrival == mov->arrival && curr->id > mov->id))
+{
+tempa=curr->arrival;tempb=curr->busrt;tempp=curr->pri;tempid=curr->id;
+curr->arrival=mov->arrival;curr->busrt=mov->busrt;curr->pri=mov->pri;curr->id=mov->id;
+mov->arrival=tempa;mov->busrt=tempb;mov->pri=tempp;mov->id=tempid;
+}
+mov=mov->next;
+}
+curr=curr->next;
+}
+}
+return header;
+}
