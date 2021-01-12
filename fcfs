@@ -13,10 +13,9 @@ struct node
 	int arrival;
 	int pri;
 	struct node *next;
-}header,header2;
+};
 struct node * Creatnode(int bu, int arr, int pr,int i1);
 struct node *InsertBack(struct node * header,int bu, int arr, int pr,int i1);
-void displaylist(struct node *header);
 int toint(string numstr);
 struct node *readfile(struct node *header);
 struct node *sortarrival(struct node * header);
@@ -25,46 +24,48 @@ void shortestfirst(struct node *header);
 struct node *sort_id(struct node * header);
 void writetofile(struct node *header,string method);
 struct node *sortburst(struct node * header);
-struct node *arrange(struct node * header);
 struct node *sort_Prio(struct node * header);
 void nonpreem(struct node *header);
 string tocharfloat(double num);
 string tochar(int num);
 void appendtofile(struct node *header);
+void readingoutputfile(struct node *header);
+struct node *smallestAt(struct node *header);
+struct node *smallestProi(struct node *header);
 int main()
 {
 	struct node *header = NULL;
-		fstream fileread("pro2.txt",ios::out | ios::app);
-		fstream file2("pro.txt",ios::out | ios::app);
+		fstream fileread("output.txt",ios::out | ios::app);
+		fstream file2("input.txt",ios::out | ios::app);
 		int c;	
 	while(true)
 	{ 
+	    cout<<"\nCPU Scheduler Simulator\n ";
 		cout<<"\n1)Scheduling Method\n ";
 		cout<<"2)Preemptive Mode \n";
 		cout<<"3)Non-preemptive Mode \n";
 		cout<<"4)Show Result \n";
 		cout<<"5)End Program\n ";
-     cout<<"Enter A Number based on the Menu options :";
+     cout<<"Enter options :";
 	cin>>c;
 	switch (c)
 	{
 	case 1:
 			
 		int schnum;
-		cout<<"\n1)Scheduling Method:  First Come First Served\n ";
-		cout<<"2)Scheduling Method:  Shortest Job First Non-Preemptive\n";
-		cout<<"3)Scheduling Method:  Shortest Job First Preemptive\n";
-		cout<<"4)Scheduling Method:  Priority Scheduling  Non-Preemptive\n";
-		cout<<"5)Scheduling Method:  Priority Scheduling  Preemptive\n ";
-		cout<<"6)Scheduling Method:  Round Robin Scheduling  time_quantum=2\n";
-		cout<<"Enter A Number based on the Menu options :";
+		cout<<"\n1) Scheduling Method:  First Come First Served\n ";
+		cout<<"2) Scheduling Method:  Shortest Job First Non-Preemptive\n";
+		cout<<"3) Scheduling Method:  Shortest Job First Preemptive\n";
+		cout<<"4) Scheduling Method:  Priority Scheduling  Non-Preemptive\n";
+		cout<<"5) Scheduling Method:  Priority Scheduling  Preemptive\n ";
+		cout<<"6) Scheduling Method:  Round Robin Scheduling  time_quantum=2\n";
+		cout<<"Enter Option :";
 		cin>>schnum;
 		switch (schnum)
 		{
 				case 1:
 					header = NULL;
 					appendtofile(header);
-			//	cout<<"\nScheduling Method:  First Come First Served\n ";
 				header=readfile(header);
 				header=sortarrival(header);
 			    	firstcome(header);
@@ -72,9 +73,7 @@ int main()
 			case 2:	
 				header = NULL;
 				appendtofile(header);
-			//	cout<<"\nScheduling Method: Shortest Job First Non-Preemptive\n";
 				header=readfile(header);
-			header=sortburst(header);
 			shortestfirst(header);
 				break;
 			case 3:
@@ -83,9 +82,7 @@ int main()
 			case 4:
 					header = NULL;
 				appendtofile(header);
-			//	cout<<"\nScheduling Method: Priority Scheduling Non-Preemptive\n";
 				header=readfile(header);
-				 header=sort_Prio(header);
 				 nonpreem(header);	
 				break;
 				default :
@@ -97,11 +94,14 @@ int main()
 		
 			break;
 		case 3:
+		
 			break;
 		case 4:
-				displaylist(header);
+			readingoutputfile(header);	
 			break;
 			case 5:
+				readingoutputfile(header);
+				return 0;
 				break;
 			default :
 				break;
@@ -114,7 +114,7 @@ int main()
 struct node *readfile(struct node *header)
 {
 
-		ifstream file2("pro.txt");
+		ifstream file2("Input.txt");
 		if(!file2.is_open())
 		{
 			cout<<"Failed to open\n";
@@ -233,7 +233,7 @@ void shortestfirst(struct node *header)
 	{
 		cout<<"List is Empty";
 	}
-       header=arrange(header);
+       header=smallestAt(header);
         struct node *temp=header;
 		while(temp != NULL)
 		{	int ps=0;
@@ -254,13 +254,13 @@ void shortestfirst(struct node *header)
 				
 		}
 		header=sort_id(header);
-		string method="Scheduling Method: Shortest Job First Non-Preemptive\n \n ";
+		string method="Scheduling Method: Shortest Job First Non-Preemptive\n";
 		writetofile(header,method);
 }
 void nonpreem(struct node *header)
 {
 	int sum=0;
-     header=arrange(header);
+     header=smallestProi(header);
 	struct node *temp=header;
 	if(header == NULL)
 	{
@@ -304,29 +304,46 @@ void writetofile(struct node *header,string method)
      	}	
      	avg=max/i;
 		output= output +"Average Waiting Time: "+tocharfloat(avg)+ "ms\n";
-		fstream fileread("pro2.txt",ios::out | ios::app);
+		fstream fileread("Output.txt",ios::out);
 		fileread<<method;
 	fileread<<output;
-//	cout<<"Average Waiting Time: "<<avg<<"ms\n ";
 }
-void displaylist(struct node *header)
+void readingoutputfile(struct node *header)
 {
-		double max=0,avg=0;
-		int i=0;
-	struct node *temp=header;
+	ifstream fileread("Output.txt");
+		string read;
+			while(!fileread.eof())
+			{
+			  getline(fileread,read);
+			  cout<<read<<"\n";
+			}
+}
+
+struct node *smallestAt(struct node *header)
+{
+	struct node *temp=header->next;
+	struct node *temp2=header;
 	if(header == NULL)
 	{
 		cout<<"List is Empty";
 	}
-		while(temp!= NULL)
-		{
-			max+=temp->busrt;
-			cout<<"P"<<temp->id<<" : "<<temp->busrt<<" \n";
-			temp=temp->next;
-			i++;
-			}
-			avg=max/i;
-			cout<<"Average Waiting Time: "<<avg<<"ms\n ";
+    header=sortarrival(header);
+	   temp2=sortburst(temp);
+	   header->next=temp2;
+	return header;
+	}
+struct node *smallestProi(struct node *header)
+{
+	struct node *temp=header->next;
+	struct node *temp2=header;
+	if(header == NULL)
+	{
+		cout<<"List is Empty";
+	}
+    header=sortarrival(header);
+	   temp2=sort_Prio(temp);
+	   header->next=temp2;
+	return header;
 	}
 struct node *sortarrival(struct node * header)
 {
@@ -428,35 +445,6 @@ struct node *sort_Prio(struct node * header)
 	}
 	return header;
 }
-struct node *arrange(struct node * header)
-{
-	struct node * curr=header;
-	struct node * temp;
-	struct node * headertemp=header;
-	temp=curr->next;
-		while(curr!=NULL)
-		{
-			if(curr!=header && temp!=NULL)
-			{
-				if(temp->arrival==0)
-				{
-					curr->next=temp->next;
-					temp->next=headertemp;
-					headertemp=temp;
-				}
-			 
-			}
-			else if(temp==NULL && temp->arrival==0)
-			{
-				temp->next = headertemp;
-				headertemp=temp;
-			}
-				temp=temp->next;
-				curr=curr->next;
-		}
-		header=headertemp;
-	return header;
-}
 void appendtofile(struct node *header)
 {
 	struct node *temp=header;
@@ -473,6 +461,6 @@ void appendtofile(struct node *header)
 			addfile=tochar(b) +":"+ tochar(a)+":" +tochar(p)+"\n";
 		}
 		
-		fstream file2("pro.txt",ios::out | ios::app);
+		fstream file2("Input.txt",ios::out | ios::app);
 		file2<<addfile;
 }
