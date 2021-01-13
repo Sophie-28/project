@@ -46,7 +46,7 @@ int main()
 		cout<<"3)Non-preemptive Mode \n";
 		cout<<"4)Show Result \n";
 		cout<<"5)End Program\n ";
-     cout<<"Enter options :";
+     cout<<"Enter A Number based on the Menu options :";
 	cin>>c;
 	switch (c)
 	{
@@ -59,7 +59,7 @@ int main()
 		cout<<"4) Scheduling Method:  Priority Scheduling  Non-Preemptive\n";
 		cout<<"5) Scheduling Method:  Priority Scheduling  Preemptive\n ";
 		cout<<"6) Scheduling Method:  Round Robin Scheduling  time_quantum=2\n";
-		cout<<"Enter Option :";
+		cout<<"Enter A Number based on the Menu options :";
 		cin>>schnum;
 		switch (schnum)
 		{
@@ -97,7 +97,7 @@ int main()
 		
 			break;
 		case 4:
-			readingoutputfile(header);	
+			readingoutputfile(header);	//displaylist(header);
 			break;
 			case 5:
 				readingoutputfile(header);
@@ -114,7 +114,7 @@ int main()
 struct node *readfile(struct node *header)
 {
 
-		ifstream file2("Input.txt");
+		ifstream file2("input.txt");
 		if(!file2.is_open())
 		{
 			cout<<"Failed to open\n";
@@ -304,13 +304,13 @@ void writetofile(struct node *header,string method)
      	}	
      	avg=max/i;
 		output= output +"Average Waiting Time: "+tocharfloat(avg)+ "ms\n";
-		fstream fileread("Output.txt",ios::out);
+		fstream fileread("output.txt",ios::out);
 		fileread<<method;
 	fileread<<output;
 }
 void readingoutputfile(struct node *header)
 {
-	ifstream fileread("Output.txt");
+	ifstream fileread("output.txt");
 		string read;
 			while(!fileread.eof())
 			{
@@ -461,6 +461,6 @@ void appendtofile(struct node *header)
 			addfile=tochar(b) +":"+ tochar(a)+":" +tochar(p)+"\n";
 		}
 		
-		fstream file2("Input.txt",ios::out | ios::app);
+		fstream file2("input.txt",ios::out | ios::app);
 		file2<<addfile;
 }
